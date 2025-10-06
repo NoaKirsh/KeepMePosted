@@ -1,0 +1,16 @@
+# Code Owners for KeepMePosted
+# These owners will be automatically requested for review when someone opens a pull request
+
+# Default owners for everything in the repo
+* @noaki
+
+# Core application files
+/tech_news_fetcher.py @noaki
+/config.py @noaki
+
+# Documentation
+/README.md @noaki
+/CONTRIBUTING.md @noaki
+
+# GitHub workflows and CI/CD
+/.github/ @noaki

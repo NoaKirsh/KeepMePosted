@@ -1,0 +1,56 @@
+# Cursor AI Rules for KeepMePosted
+
+## Project Context
+This is an AI-powered tech newsletter application using Google Gemini.
+Two-agent system: NewsCollectorAgent (RSS feeds) and NewsSummarizerAgent (AI summaries).
+
+## Code Style & Standards
+- Python 3.8+ with type hints (typing module)
+- Async/await patterns for I/O operations
+- Follow PEP 8 style guide
+- Use descriptive variable names
+- Keep functions focused and under 50 lines when possible
+
+## Architecture Principles
+- Agent-based design: Each agent has clear responsibilities
+- Configuration in `config.py`, not hardcoded
+- Environment variables for secrets (via .env)
+- Graceful error handling with logging
+- No blocking I/O in async functions
+
+## Testing & Debugging
+- Test with small article limits first (max_articles=3)
+- Check API key validity before running
+- Log errors with context (source, article title, etc.)
+- Validate RSS feed responses before parsing
+
+## AI Integration Guidelines
+- Google Gemini API calls should have timeout handling
+- Use safety_settings to control content filtering
+- Keep prompts focused and structured
+- Handle API rate limits gracefully
+- Provide fallback behavior if AI fails
+
+## Dependencies
+- Minimize external dependencies
+- Pin versions in requirements.txt
+- Document why each dependency is needed
+- Prefer standard library when possible
+
+## Security
+- Never commit .env file
+- Validate all external inputs (RSS feeds)
+- Sanitize article content before AI processing
+- Use environment variables for all secrets
+
+## Performance
+- Fetch RSS feeds concurrently when possible
+- Limit article processing to configured max
+- Cache AI responses if implementing repeated runs
+- Use efficient data structures (dicts for grouping)
+
+## Documentation
+- Docstrings for all classes and public methods
+- Inline comments for complex logic only
+- Keep README updated with setup instructions
+- Document configuration options in config.py
