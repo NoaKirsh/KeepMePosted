@@ -69,7 +69,7 @@
 
 6. **▶️ Run the application:**
    ```bash
-   python tech_news_fetcher.py
+   python main.py
    ```
 
 ## 🔐 Security Notes
@@ -120,10 +120,19 @@ KeepMePosted uses a two-agent system where agents communicate and collaborate:
 
 ```
 KeepMePosted/
-├── tech_news_fetcher.py      # Main application with agents
-├── config.py                 # Configuration management
-├── requirements.txt          # Python dependencies
-├── .env                      # Your API keys (not in git)
+├── agents/                  # Agent modules
+│   ├── __init__.py          # Agent exports
+│   ├── collector.py         # NewsCollectorAgent
+│   ├── summarizer.py        # NewsSummarizerAgent
+│   └── orchestrator.py      # TechNewsOrchestrator
+├── utils/                   # Utility functions
+│   ├── __init__.py
+│   └── ai_client.py         # Google AI client setup
+├── tests/                   # Unit tests (coming soon)
+├── main.py                  # Main entry point ⭐
+├── config.py                # Configuration management
+├── requirements.txt         # Python dependencies
+├── .env                     # Your API keys (not in git)
 ├── .gitignore               # Git ignore rules
 └── README.md                # This file
 ```
