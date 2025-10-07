@@ -11,6 +11,13 @@ Two-agent system: NewsCollectorAgent (RSS feeds) and NewsSummarizerAgent (AI sum
 - Use descriptive variable names
 - Keep functions focused and under 50 lines when possible
 
+## Code Quality
+- Strive for generic, reusable code by abstracting common logic into functions or classes.
+- Eliminate code duplication and redundancy; refactor repeated patterns into shared utilities.
+- Ensure code is modular, maintainable, and easy to extend.
+- Use clear, descriptive names for variables, functions, and classes.
+- Adhere to the Single Responsibility Principle: each function or class should have one clear purpose.
+
 ## Architecture Principles
 - Agent-based design: Each agent has clear responsibilities
 - Configuration in `config.py`, not hardcoded
