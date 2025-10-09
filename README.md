@@ -164,6 +164,22 @@ KeepMePosted/
 - 🔄 Activate your virtual environment before running
 - 📦 Install all dependencies: `pip install -r requirements.txt`
 
+## 🧪 Testing
+
+The project includes comprehensive unit tests:
+
+```bash
+# Run all tests
+python -m pytest tests/ -v
+
+# Run with coverage
+python -m pytest tests/ --cov=. --cov-report=term-missing
+```
+
+**Current Test Coverage: 69%** (14 tests passing)
+
+See [`tests/README.md`](tests/README.md) for detailed testing documentation.
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please check out our [Contributing Guidelines](CONTRIBUTING.md) for details on:

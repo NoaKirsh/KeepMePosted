@@ -30,6 +30,7 @@ Two-agent system: NewsCollectorAgent (RSS feeds) and NewsSummarizerAgent (AI sum
 - Check API key validity before running
 - Log errors with context (source, article title, etc.)
 - Validate RSS feed responses before parsing
+- Update "Current Test Coverage" in the README files whenever the coverage is updated.
 
 ## AI Integration Guidelines
 - Google Gemini API calls should have timeout handling
