@@ -26,11 +26,13 @@ Two-agent system: NewsCollectorAgent (RSS feeds) and NewsSummarizerAgent (AI sum
 - No blocking I/O in async functions
 
 ## Testing & Debugging
+- Add tests for every new feature that is added by you.
 - Test with small article limits first (max_articles=3)
 - Check API key validity before running
 - Log errors with context (source, article title, etc.)
 - Validate RSS feed responses before parsing
 - Update "Current Test Coverage" in the README files whenever the coverage is updated.
+- Update test descriptions in README for every update.
 
 ## AI Integration Guidelines
 - Google Gemini API calls should have timeout handling
@@ -62,3 +64,4 @@ Two-agent system: NewsCollectorAgent (RSS feeds) and NewsSummarizerAgent (AI sum
 - Inline comments for complex logic only
 - Keep README updated with setup instructions
 - Document configuration options in config.py
+- It would be best to keep a human-like writing style - so it doesn't seem like an AI wrote that.
