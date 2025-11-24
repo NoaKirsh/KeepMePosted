@@ -48,6 +48,7 @@ Thumbs.db
 *.log
 
 # Testing
+coverage.xml
 .coverage
 .coverage.*
 htmlcov/
