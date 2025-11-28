@@ -6,7 +6,8 @@ Fixtures are organized into sections:
 2. Article Data Fixtures - Sample articles for testing
 3. Mock RSS Feed Fixtures - Mocked feedparser objects
 4. Mock Gemini API Fixtures - Mocked Google AI responses
-5. Agent Instance Fixtures - Pre-configured agent instances
+5. Mock Email/SMTP Fixtures - Email configs and SMTP mocks
+6. Agent Instance Fixtures - Pre-configured agent instances
 """
 
 import pytest
@@ -15,6 +16,7 @@ from unittest.mock import Mock, MagicMock
 from agents.collector import NewsCollectorAgent
 from agents.summarizer import NewsSummarizerAgent
 from agents.orchestrator import TechNewsOrchestrator
+from agents.email_sender import EmailAgent
 
 
 # =============================================================================
@@ -190,6 +192,47 @@ def mock_genai_client():
 
 
 # =============================================================================
+# MOCK EMAIL/SMTP FIXTURES
+# =============================================================================
+# Mocked SMTP and email configurations for testing
+
+@pytest.fixture
+def sample_email_config():
+    """Email configuration for testing."""
+    return {
+        'email_enabled': True,
+        'email_user': 'test@gmail.com',
+        'email_password': 'test_password',
+        'smtp_server': 'smtp.gmail.com',
+        'smtp_port': 587,
+    }
+
+
+@pytest.fixture
+def disabled_email_config():
+    """Email configuration with email disabled."""
+    return {
+        'email_enabled': False,
+        'email_user': 'test@gmail.com',
+        'email_password': 'test_password',
+        'smtp_server': 'smtp.gmail.com',
+        'smtp_port': 587,
+    }
+
+
+@pytest.fixture
+def no_credentials_email_config():
+    """Email configuration with missing credentials."""
+    return {
+        'email_enabled': True,
+        'email_user': '',
+        'email_password': '',
+        'smtp_server': 'smtp.gmail.com',
+        'smtp_port': 587,
+    }
+
+
+# =============================================================================
 # AGENT INSTANCE FIXTURES
 # =============================================================================
 # Pre-configured agent instances for testing
@@ -207,7 +250,30 @@ def summarizer(sample_config):
 
 
 @pytest.fixture
+def email_agent(sample_email_config):
+    """Create an EmailAgent instance with test config (email enabled)."""
+    return EmailAgent(sample_email_config)
+
+
+@pytest.fixture
+def email_agent_disabled(disabled_email_config):
+    """Create an EmailAgent instance with email disabled."""
+    return EmailAgent(disabled_email_config)
+
+
+@pytest.fixture
+def email_agent_no_credentials(no_credentials_email_config):
+    """Create an EmailAgent instance with missing credentials."""
+    return EmailAgent(no_credentials_email_config)
+
+
+@pytest.fixture
+def email_agent_with_mock_smtp(sample_email_config):
+    """Create an EmailAgent instance configured for mocked SMTP testing."""
+    return EmailAgent(sample_email_config)
+
+
+@pytest.fixture
 def orchestrator(sample_config, sample_rss_feeds):
     """Create a TechNewsOrchestrator instance with test config."""
-    return TechNewsOrchestrator(sample_config, sample_rss_feeds)
-
+    return TechNewsOrchestrator(sample_config, sample_rss_feeds, [])

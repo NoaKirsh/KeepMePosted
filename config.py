@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-"""
-Configuration management for KeepMePosted with Google AI Studio.
-"""
+"""Configuration for KeepMePosted"""
 
 import os
 from dotenv import load_dotenv
@@ -27,13 +24,33 @@ RSS_FEEDS = {
     "CNET": "https://www.cnet.com/rss/news/",
 }
 
-# Application Configuration
+# Main Configuration
 CONFIG = {
+    # Article Collection
     "max_articles": 10,
     "max_ai": 15,
     "hours_back": int(os.getenv('HOURS_BACK', '120')),
+    
+    # Google AI Configuration
     "google_api_key": os.getenv('GOOGLE_API_KEY', ''),
-    "model": "models/gemini-2.5-flash",  # Current stable Gemini model (use models/ prefix)
-    "ai_tokens": 2000,  # Increased for longer summaries
-    "ai_temp": 0.7,  # Slightly higher for more creative responses
+    "model": "models/gemini-2.5-flash",
+    "ai_tokens": 2000,
+    "ai_temp": 0.7,
+    
+    # Email Configuration
+    "email_enabled": os.getenv('EMAIL_ENABLED', 'false').lower() == 'true',
+    "email_user": os.getenv('EMAIL_USER', ''),
+    "email_password": os.getenv('EMAIL_PASSWORD', ''),
+    
+    # SMTP Configuration (Gmail by default, can override in .env if needed)
+    "smtp_server": os.getenv('SMTP_SERVER', 'smtp.gmail.com'),
+    "smtp_port": int(os.getenv('SMTP_PORT', '587')),
 }
+
+# Mailing List (comma-separated in .env)
+MAILING_LIST = [
+    email.strip() 
+    for email in os.getenv('MAILING_LIST', '').split(',') 
+    if email.strip()
+]
+

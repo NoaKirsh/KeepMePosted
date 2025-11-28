@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
-"""
-KeepMePosted - AI-Powered Tech Newsletter
-Main entry point for the application.
-"""
+"""KeepMePosted - AI-Powered Tech Newsletter"""
 
 import asyncio
 import logging
 import warnings
-from config import CONFIG, RSS_FEEDS
+from config import CONFIG, RSS_FEEDS, MAILING_LIST
 from agents.orchestrator import TechNewsOrchestrator
 
 # Suppress warnings for cleaner output
@@ -19,17 +16,14 @@ logger = logging.getLogger(__name__)
 
 
 async def main():
-    """Main function to run the tech newsletter workflow."""
     print("\n" + "="*60)
-    print("🚀 KeepMePosted - AI-Powered Tech Newsletter")
-    print("   Powered by Google AI Studio (Gemini)")
+    print("🚀 KeepMePosted - AI Tech Newsletter (Powered by Gemini)")
     print("="*60)
     
     try:
         print("\n⚙️  Initializing agents...")
-        orchestrator = TechNewsOrchestrator(CONFIG, RSS_FEEDS)
+        orchestrator = TechNewsOrchestrator(CONFIG, RSS_FEEDS, MAILING_LIST)
         await orchestrator.initialize_agents()
-        print("✅ Agents initialized\n")
         
         await orchestrator.run_dialog_workflow()
         
@@ -38,7 +32,6 @@ async def main():
         print("="*60 + "\n")
         
     except Exception as e:
-        logger.error(f"Application error: {e}")
         print(f"\n❌ Error: {e}\n")
 
 

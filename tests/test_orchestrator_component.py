@@ -24,7 +24,7 @@ class TestOrchestratorComponent:
         """Test initialization fails with empty or None API key."""
         for invalid_key in ['', None]:
             config = {'hours_back': 120, 'max_articles': 10, 'google_api_key': invalid_key}
-            orchestrator = TechNewsOrchestrator(config, sample_rss_feeds)
+            orchestrator = TechNewsOrchestrator(config, sample_rss_feeds, [])
             
             with pytest.raises(ValueError, match="GOOGLE_API_KEY not found"):
                 await orchestrator.initialize_agents()
@@ -105,12 +105,14 @@ class TestOrchestratorComponent:
         """Test orchestrator creates correct agent types."""
         from agents.collector import NewsCollectorAgent
         from agents.summarizer import NewsSummarizerAgent
+        from agents.email_sender import EmailAgent
         
-        orchestrator = TechNewsOrchestrator(sample_config, sample_rss_feeds)
+        orchestrator = TechNewsOrchestrator(sample_config, sample_rss_feeds, ['test@example.com'])
         
         assert orchestrator.config == sample_config
         assert isinstance(orchestrator.collector, NewsCollectorAgent)
         assert isinstance(orchestrator.summarizer, NewsSummarizerAgent)
+        assert isinstance(orchestrator.email_agent, EmailAgent)
     
     @pytest.mark.asyncio
     async def test_workflow_order_of_operations(self, orchestrator, sample_articles):

@@ -2,20 +2,36 @@
 
 ## 🧪 Test Suite Overview
 
-This directory contains the test suite for KeepMePosted, organized by testing level.
+### Current Test Coverage: 94% ✅
 
-### Current Test Coverage: 92% ✅
+## Test Files
 
-## 📁 Test Files
+### Unit Tests
+- `test_collector_unit.py` - Pure functions, article grouping
+- `test_summarizer_unit.py` - Prompt building, article limiting
+- `test_email_unit.py` - Email validation, recipient handling, SMTP config
+- `test_utils.py` - AI client initialization, error handling
+
+### Component Tests
+- `test_collector_component.py` - RSS feeds (mocked), date filtering, errors
+- `test_summarizer_component.py` - Gemini API (mocked), safety filters, errors
+- `test_email_component.py` - SMTP (mocked), HTML generation, edge cases
+- `test_orchestrator_component.py` - Agent coordination, workflow, dialog
 
 ### Unit Tests (Stage 1 - Completed)
-- **`test_collector_unit.py`** - Unit tests for NewsCollectorAgent
+- **`test_collector_unit.py`**
   - Pure function tests (_group_by_source, report_to_summarizer)
-  - No external dependencies
+  - Article grouping and reporting logic
   
 - **`test_summarizer_unit.py`** - Unit tests for NewsSummarizerAgent
   - Prompt building logic tests
   - Article limiting behavior
+  
+- **`test_email_unit.py`**
+  - Email validation (disabled, missing credentials, empty recipients)
+  - Recipient cleaning and filtering
+  - Subject generation with dates
+  - SMTP configuration (Gmail default, custom settings)
   
 - **`test_utils.py`** - Unit tests for utility functions
   - AI client initialization
@@ -29,67 +45,67 @@ This directory contains the test suite for KeepMePosted, organized by testing le
   - Feed errors, malformed entries, empty feeds
   
 - **`test_summarizer_component.py`** - Summarizer with mocked Gemini API
-  - Tests `analyze_articles()` with mocked responses
+  - Gemini API integration with mocked responses
   - API error handling (quota, rate limits, key errors)
-  - Safety filters, blocked responses
-  - Configuration validation
+  - Safety filters and blocked responses
+  - Configuration validation and client caching
   
-- **`test_orchestrator_component.py`** - Orchestrator coordination
+- **`test_email_component.py`** 
+  - SMTP integration with mocked server
+  - Multiple recipients handling
+  - Authentication and SMTP error handling
+  - HTML email generation and structure
+  - Edge cases (long summaries, special characters, many articles)
+  
+- **`test_orchestrator_component.py`**
   - Agent initialization and configuration
   - Workflow execution and error propagation
-  - Dialog simulation
-  - Order of operations
+  - Dialog simulation between agents
+  - Order of operations and email integration
 
 ### Support Files
 - **`conftest.py`** - Shared pytest fixtures
-  - Configuration fixtures
-  - Sample article data
-  - Mock response objects
-  - Agent instances
+  - Configuration fixtures (app config, RSS feeds, email config)
+  - Sample article data (single, multiple, old articles)
+  - Mock RSS feed objects
+  - Mock Gemini API responses
+  - Mock email/SMTP configurations
+  - Agent instances (collector, summarizer, email, orchestrator)
 
 ## 🚀 Running Tests
 
 ### Run All Tests
 ```bash
+# All tests
 python -m pytest tests/ -v
-```
 
-### Run With Coverage
-```bash
-python -m pytest tests/ --cov=. --cov-report=term-missing
-```
+# With coverage
+python -m pytest tests/ --cov=. --cov-report=term-missing -v
 
-### Run Specific Test File
-```bash
-python -m pytest tests/test_collector_unit.py -v
+# By category
+python -m pytest tests/test_*_unit.py -v
+python -m pytest tests/test_*_component.py -v
+
+# Specific file
+python -m pytest tests/test_email_component.py -v
 ```
 
 ### Run Specific Test
 ```bash
 python -m pytest tests/test_collector_unit.py::TestCollectorPureFunctions::test_group_by_source_empty -v
+python -m pytest tests/test_email_component.py::TestEmailAgentWithMockedSMTP::test_send_email_success -v
 ```
 
-## 📊 Test Statistics
+**Test Categories:**
+- ✅ Unit Tests: Pure functions, validation, configuration
+- ✅ Component Tests: Mocked external dependencies
+- ✅ Integration Tests: Agent interactions and workflows
+- ✅ Edge Cases: Error handling, special inputs, large data
 
-- ✅ **30 tests** passing (down from 52 - removed redundancies)
-- ⚡ **1.86s** total test time (down from 2.96s - 37% faster!)
-- 📈 **92% code coverage** (agents: 100%)
-  - Collector: 100% ✅
-  - Summarizer: 100% ✅
-  - Orchestrator: 100% ✅
-  - Utils: 100% ✅
-
-**Optimization Results:**
-- Removed 22 redundant tests (42% reduction)
-- Maintained 100% coverage on all agent code
-- Tests run 37% faster
-- More efficient test suite with combined tests
-
-## 🎯 Testing Phases
+## Test Breakdown
 
 ### ✅ Phase 1: Unit Tests (COMPLETED)
-- Pure functions, no external dependencies
-- 14 tests, fast execution
+Pure functions, no external dependencies
 
 ### ✅ Phase 2: Component Tests (COMPLETED)
 - Mocked RSS feeds and Gemini API
@@ -104,7 +120,7 @@ python -m pytest tests/test_collector_unit.py::TestCollectorPureFunctions::test_
 
 ### 📋 Phase 4: E2E Tests (Planned)
 - Real API integration tests (manual)
-- Smoke tests for production readiness
+- End-to-end workflow validation
 - Performance benchmarks
 
 ## 🏗️ Test Structure
@@ -112,10 +128,16 @@ python -m pytest tests/test_collector_unit.py::TestCollectorPureFunctions::test_
 ```
 tests/
 ├── __init__.py
-├── README.md (this file)
-├── test_collector_unit.py    # NewsCollectorAgent unit tests
-├── test_summarizer_unit.py   # NewsSummarizerAgent unit tests
-└── test_utils.py             # Utility functions tests
+├── README.md                      # This file
+├── conftest.py                    # Shared fixtures
+├── test_collector_unit.py         # Collector unit tests
+├── test_collector_component.py    # Collector component tests
+├── test_summarizer_unit.py        # Summarizer unit tests
+├── test_summarizer_component.py   # Summarizer component tests
+├── test_email_unit.py             # Email unit tests
+├── test_email_component.py        # Email component tests
+├── test_orchestrator_component.py # Orchestrator tests
+└── test_utils.py                  # Utility tests
 ```
 
 ## 📝 Writing Tests

@@ -1,6 +1,6 @@
 """
 Tech News Orchestrator
-Coordinates the interaction between collector and summarizer agents,
+Coordinates the interaction between collector, summarizer, and email agents,
 including agent dialog and workflow management.
 """
 
@@ -8,15 +8,18 @@ import logging
 from typing import Dict, List
 from .collector import NewsCollectorAgent
 from .summarizer import NewsSummarizerAgent
+from .email_sender import EmailAgent
 
 
 class TechNewsOrchestrator:
-    """Orchestrates the collector and summarizer agents with dialog capabilities."""
+    """Orchestrates the collector, summarizer, and email agents with dialog capabilities."""
     
-    def __init__(self, config: Dict, rss_feeds: Dict[str, str]):
+    def __init__(self, config: Dict, rss_feeds: Dict[str, str], mailing_list: List[str]):
         self.config = config
+        self.mailing_list = mailing_list
         self.collector = NewsCollectorAgent(rss_feeds, config)
         self.summarizer = NewsSummarizerAgent(config)
+        self.email_agent = EmailAgent(config)
         self.logger = logging.getLogger(self.__class__.__name__)
     
     async def initialize_agents(self):
@@ -26,7 +29,7 @@ class TechNewsOrchestrator:
         self.logger.info("Agents initialized successfully")
     
     async def run_dialog_workflow(self):
-        """Run the dialog workflow between collector and summarizer."""
+        """Run the dialog workflow between collector, summarizer, and email agents."""
         # Collect news
         articles = await self.collector.collect_news()
         
@@ -47,28 +50,37 @@ class TechNewsOrchestrator:
         # Agent dialog
         await self._simulate_dialog(articles)
         
+        # Send email to mailing list
+        if self.mailing_list:
+            await self.email_agent.execute(analysis, articles, self.mailing_list)
+        
         return analysis
     
     async def _simulate_dialog(self, articles: List[Dict]):
-        """Simulate a dialog between the collector and summarizer agents.
-        
+        """Simulate a dialog between the collector, summarizer, and email agents.
         TODO: Implement real AI-powered dialog between agents for more dynamic interaction.
         """
         print("\n" + "="*80)
         print("💬 AGENT DIALOG:")
         print("="*80)
         
+        # Find top companies
         by_source = self.collector._group_by_source()
-        priority_companies = ["NVIDIA", "Intel", "AMD", "Qualcomm", "Broadcom", "OpenAI"]
-        priority_counts = sorted(
-            [(co, len(by_source.get(co, []))) for co in priority_companies if co in by_source],
+        priority = ["NVIDIA", "Intel", "AMD", "Qualcomm", "Broadcom", "OpenAI"]
+        top = sorted(
+            [(co, len(by_source.get(co, []))) for co in priority if co in by_source],
             key=lambda x: x[1], reverse=True
         )
         
-        if priority_counts:
-            top_companies = ", ".join([f"{co} ({cnt})" for co, cnt in priority_counts[:3]])
-            print(f"🗂️  Collector: I've collected {len(articles)} articles. Top companies: {top_companies}")
-            print(f"🤖 Summarizer: Thank you! I see {priority_counts[0][0]} has the most coverage. "
-                  f"I'll focus on analyzing their latest developments along with competitive intelligence.")
+        if top:
+            companies = ", ".join([f"{co} ({cnt})" for co, cnt in top[:3]])
+            print(f"🗂️  Collector: Collected {len(articles)} articles. Top: {companies}")
+            print(f"🤖 Summarizer: I'll focus on {top[0][0]} and competitive intelligence.")
+            
+            # Email agent status
+            if self.config.get("email_enabled") and self.mailing_list:
+                print(f"📧 Email Agent: Ready to send to {len(self.mailing_list)} recipient(s).")
+            elif self.mailing_list:
+                print(f"📧 Email Agent: {len(self.mailing_list)} recipient(s) configured (email disabled).")
         
-        print("\n✅ Dialog completed successfully!")
+        print("✅ Dialog complete!")

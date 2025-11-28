@@ -63,11 +63,12 @@
 
 ## ✨ Features
 
-- **Two-Agent System**: Collector and Summarizer agents with dialog capabilities
+- **Three-Agent System**: Collector, Summarizer, and Email agents with dialog capabilities
 - **Priority Tech Companies**: NVIDIA, Intel, AMD, Qualcomm, Broadcom, OpenAI
 - **Quality News Sources**: TechCrunch, Ars Technica, The Verge, WIRED, VentureBeat, CNET
 - **AI-Powered Summaries**: Using Google Gemini (FREE tier available)
-- **Agent Dialog**: Interactive conversation between collector and summarizer agents
+- **Email Delivery**: Beautiful HTML newsletters sent directly to your inbox
+- **Agent Dialog**: Interactive conversation between agents
 - **Configurable Time Range**: Filter articles from the last 5 days (configurable)
 - **Async Architecture**: Modern async/await patterns for better performance
 
@@ -106,21 +107,48 @@
    pip install -r requirements.txt
    ```
 
-5. **🔑 Set up your Google AI Studio API key (FREE):**
+5. **🔑 Set up your configuration:**
+   
+   **Google AI Studio API key (FREE):**
    - Go to https://aistudio.google.com/
    - Sign in with your Google account
    - Click 'Get API key' in the left sidebar
    - Create a new API key
-   - Create a `.env` file in the project root:
-     ```
-     # Google AI Studio API Key (FREE!)
-     GOOGLE_API_KEY=your_google_api_key_here
-     
-     # Time range for news fetching (in hours, default: 120 = 5 days)
-     HOURS_BACK=120
-     ```
+   
+   **Create a `.env` file in the project root:**
+   ```
+   # Google AI Studio API Key (FREE!)
+   GOOGLE_API_KEY=your_google_api_key_here
+   
+   # Time range for news fetching (in hours, default: 120 = 5 days)
+   HOURS_BACK=120
+   
+   # Email Configuration (Optional - leave disabled to skip email)
+   EMAIL_ENABLED=false
+   EMAIL_USER=your_email@gmail.com
+   EMAIL_PASSWORD=your_gmail_app_password
+   MAILING_LIST=recipient@example.com
+   ```
+   
+   **To Enable Email Delivery (Optional):**
+   
+   Email requires authentication - you need to send FROM a real email account. Here's how:
+   
+   1. **Get Gmail App Password** (recommended - it's free):
+      - Go to https://myaccount.google.com/apppasswords
+      - Enable 2-factor authentication if not already enabled
+      - Generate an app password for "Mail"
+      - Use this password in `EMAIL_PASSWORD` (not your regular Gmail password)
+   
+   2. **Update your `.env`:**
+      ```
+      EMAIL_ENABLED=true
+      EMAIL_USER=your_email@gmail.com
+      EMAIL_PASSWORD=your_16_char_app_password
+      MAILING_LIST=recipient1@example.com,recipient2@example.com
+      ```
 
-6. **▶️ Run the application:**
+6. **▶️ Run the application from the project's root directory:**
    ```bash
    python main.py
    ```
@@ -139,11 +167,11 @@
 - **Efficient prompts** to minimize token usage
 - No credit card required for Google AI Studio free tier
 
-## 🏗️ Agent Architecture
+## Agent Architecture
 
-KeepMePosted uses a two-agent system where agents communicate and collaborate:
+KeepMePosted uses a three-agent system where agents communicate and collaborate:
 
-### 🗂️ NewsCollectorAgent
+### NewsCollectorAgent
 - **🎯 Responsibility**: Fetches and processes RSS feeds
 - **✨ Features**: 
   - Parses multiple RSS sources
@@ -161,15 +189,25 @@ KeepMePosted uses a two-agent system where agents communicate and collaborate:
   - Provides competitive intelligence
   - Tailored insights for software engineers
 
-### 🎭 TechNewsOrchestrator
+### 📧 EmailAgent
+- **🎯 Responsibility**: Delivers newsletters via email
+- **✨ Features**:
+  - Beautiful HTML email formatting
+  - SMTP configuration support
+  - Multiple recipient support
+  - Error handling and delivery status
+  - Professional newsletter templates
+
+### TechNewsOrchestrator
 - **🎯 Responsibility**: Coordinates agent interactions
 - **✨ Features**:
   - Manages async workflow between agents
   - Facilitates agent dialog
   - Handles error propagation and logging
+  - Coordinates email delivery
   - Provides comprehensive reporting
 
-## 📁 File Structure
+## File Structure
 
 ```
 KeepMePosted/
@@ -177,12 +215,24 @@ KeepMePosted/
 │   ├── __init__.py          # Agent exports
 │   ├── collector.py         # NewsCollectorAgent
 │   ├── summarizer.py        # NewsSummarizerAgent
+│   ├── email_sender.py      # EmailAgent
 │   └── orchestrator.py      # TechNewsOrchestrator
 ├── utils/                   # Utility functions
 │   ├── __init__.py
-│   └── ai_client.py         # Google AI client setup
-├── tests/                   # Unit tests (coming soon)
-├── main.py                  # Main entry point ⭐
+│   ├── ai_client.py         # Google AI client setup
+│   └── email_template.py    # HTML email template
+├── tests/                   # Comprehensive test suite
+│   ├── conftest.py          # Shared test fixtures
+│   ├── test_collector_unit.py
+│   ├── test_collector_component.py
+│   ├── test_summarizer_unit.py
+│   ├── test_summarizer_component.py
+│   ├── test_email_unit.py
+│   ├── test_email_component.py
+│   ├── test_orchestrator_component.py
+│   ├── test_utils.py
+│   └── README.md            # Testing documentation
+├── main.py                  # Main entry point
 ├── config.py                # Configuration management
 ├── requirements.txt         # Python dependencies
 ├── .env                     # Your API keys (not in git)
@@ -190,7 +240,7 @@ KeepMePosted/
 └── README.md                # This file
 ```
 
-## 🌟 What Makes KeepMePosted Special
+## What Makes KeepMePosted Special
 
 - **Personalized for Tech Engineers**: Tailored summaries focusing on your priority companies
 - **Competitive Intelligence**: Detailed analysis of NVIDIA vs competitors
@@ -199,53 +249,46 @@ KeepMePosted/
 - **Weekly Intelligence Brief**: Key metrics and strategic insights
 - **Structured Output**: Organized by categories for easy scanning
 
-## 🛠️ Troubleshooting
+## Troubleshooting
 
-### 🔑 Google AI API Issues
+### Google AI API Issues
 - Make sure you have a valid Google AI Studio API key
 - Check that your API key is set in the `.env` file
 - Verify you're using the correct model name in `config.py`
 - The script will show error messages if AI summary fails
 
-### 📰 No Articles Found
+### No Articles Found
 - Check your internet connection
 - Verify RSS feed URLs are accessible
 - Try increasing `HOURS_BACK` in `.env` to fetch older articles
 
-### 🐍 Python Issues
+### Python Issues
 - Make sure Python 3.8+ is installed
 - Activate your virtual environment before running
 - Install all dependencies: `pip install -r requirements.txt`
 
-## 🧪 Testing
+## Testing
 
-The project includes comprehensive unit and component tests:
+The project includes comprehensive unit and component tests covering all agents and functionality.
+
+### Quick Start
+Run these commands from the **project root directory** (the folder containing `main.py`):
 
 ```bash
-# Run all tests with coverage
-python -m pytest tests/ --cov=. --cov-report=xml --cov-report=term-missing -v
+# Run all tests
+python -m pytest tests/ -v
 
-# Run only unit tests
+# With coverage
+python -m pytest tests/ --cov=. --cov-report=term-missing -v
+
+# Specific categories
 python -m pytest tests/test_*_unit.py -v
-
-# Run only component tests
 python -m pytest tests/test_*_component.py -v
-
-# Generate HTML coverage report
-python -m pytest tests/ --cov=. --cov-report=html -v
 ```
 
-**Current Test Coverage: 92%** ✅ (30 tests passing - optimized suite)
+See [`tests/README.md`](tests/README.md) for details.
 
-See [`tests/README.md`](tests/README.md) for detailed testing documentation.
-
-### Visual Coverage (VS Code)
-1. Install **Coverage Gutters** extension
-2. Run tests with coverage: `pytest tests/ --cov=. --cov-report=xml -v`
-3. Click **"Watch"** in VS Code status bar
-4. See green/red line highlighting in your code!
-
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please check out our [Contributing Guidelines](CONTRIBUTING.md) for details on:
 - AI-assisted development practices
@@ -253,6 +296,6 @@ Contributions are welcome! Please check out our [Contributing Guidelines](CONTRI
 - Testing requirements
 - Pull request process
 
-## 📄 License
+## License
 
 MIT License - feel free to use and modify for your needs!
