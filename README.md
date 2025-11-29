@@ -4,57 +4,6 @@
 > Two specialized agents work together to collect and summarize tech news for software engineers.
 // An AI-powered tech newsletter using Google Gemini with intelligent agent dialog capabilities.
 // Two specialized agents work together to collect and summarize tech news for software engineers.
-[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Powered by Google Gemini](https://img.shields.io/badge/Powered%20by-Google%20Gemini-4285F4?logo=google)](https://ai.google.dev/)
-
-## ✨ Features
-
-- Two-Agent System: Collector and Summarizer agents with dialog capabilities
-- Priority Tech Companies: NVIDIA, Intel, AMD, Qualcomm, Broadcom, OpenAI
-- Quality News Sources: TechCrunch, Ars Technica, The Verge, WIRED, VentureBeat, CNET
-- AI-Powered Summaries: Using Google Gemini (FREE tier available)
-- Agent Dialog: Interactive conversation between collector and summarizer agents
-- Configurable Time Range: Filter articles from the last 5 days (configurable)
-- Async Architecture: Modern async/await patterns for better performance
-
-## 🚀 Quick Start
-
-### 📋 Prerequisites
-
-- Python 3.8 or higher
-- Google AI Studio API key (free!)
-- Internet connection for RSS feeds
-
-### 💻 Installation
-
-1. **📥 Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/KeepMePosted.git
-   cd KeepMePosted
-   ```
-
-2. **🐍 Create a virtual environment:**
-   ```bash
-   python -m venv .venv
-   ```
-
-3. **⚙️ Activate the virtual environment:**
-   ```bash
-   # Windows
-   .venv\Scripts\activate
-   
-   # Mac/Linux
-   source .venv/bin/activate
-   ```
-
-4. **📦 Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-// ...
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -171,9 +120,9 @@
 
 KeepMePosted uses a three-agent system where agents communicate and collaborate:
 
-### NewsCollectorAgent
-- **🎯 Responsibility**: Fetches and processes RSS feeds
-- **✨ Features**: 
+### 📰 NewsCollectorAgent
+- **Responsibility**: Fetches and processes RSS feeds
+- **Features**: 
   - Parses multiple RSS sources
   - Filters articles by date and relevance
   - Provides structured article data
@@ -181,8 +130,8 @@ KeepMePosted uses a three-agent system where agents communicate and collaborate:
   - Reports findings to Summarizer
 
 ### 🤖 NewsSummarizerAgent
-- **🎯 Responsibility**: Analyzes and summarizes collected news
-- **✨ Features**:
+- **Responsibility**: Analyzes and summarizes collected news
+- **Features**:
   - Uses Google Gemini for intelligent analysis
   - Focuses on priority tech companies
   - Creates structured summaries by category
@@ -190,8 +139,8 @@ KeepMePosted uses a three-agent system where agents communicate and collaborate:
   - Tailored insights for software engineers
 
 ### 📧 EmailAgent
-- **🎯 Responsibility**: Delivers newsletters via email
-- **✨ Features**:
+- **Responsibility**: Delivers newsletters via email
+- **Features**:
   - Beautiful HTML email formatting
   - SMTP configuration support
   - Multiple recipient support
@@ -199,8 +148,8 @@ KeepMePosted uses a three-agent system where agents communicate and collaborate:
   - Professional newsletter templates
 
 ### TechNewsOrchestrator
-- **🎯 Responsibility**: Coordinates agent interactions
-- **✨ Features**:
+- **Responsibility**: Coordinates agent interactions
+- **Features**:
   - Manages async workflow between agents
   - Facilitates agent dialog
   - Handles error propagation and logging
@@ -211,6 +160,9 @@ KeepMePosted uses a three-agent system where agents communicate and collaborate:
 
 ```
 KeepMePosted/
+├── .github/
+│   └── workflows/
+│       └── ci.yml           # GitHub Actions CI/CD pipeline
 ├── agents/                  # Agent modules
 │   ├── __init__.py          # Agent exports
 │   ├── collector.py         # NewsCollectorAgent
@@ -232,9 +184,14 @@ KeepMePosted/
 │   ├── test_orchestrator_component.py
 │   ├── test_utils.py
 │   └── README.md            # Testing documentation
+├── scripts/                 # Development scripts
+│   ├── run_tests.py         # Local CI/CD checks
+│   └── run_tests.bat        # Windows shortcut
 ├── main.py                  # Main entry point
 ├── config.py                # Configuration management
+├── pyproject.toml           # Tool configuration (pytest, black, ruff)
 ├── requirements.txt         # Python dependencies
+├── CICD_SETUP.md            # CI/CD setup guide
 ├── .env                     # Your API keys (not in git)
 ├── .gitignore               # Git ignore rules
 └── README.md                # This file
@@ -287,6 +244,17 @@ python -m pytest tests/test_*_component.py -v
 ```
 
 See [`tests/README.md`](tests/README.md) for details.
+
+## CI/CD Pipeline
+
+GitHub Actions automatically runs all tests on every push:
+
+- **Automated Testing**: Tests on Python 3.10, 3.11, and 3.12 simultaneously
+- **Code Quality**: Ruff linter and Black formatter checks
+
+**Local testing:** Run `python scripts/run_tests.py` before pushing.
+
+See [`CICD_SETUP.md`](CICD_SETUP.md) for setup instructions.
 
 ## Contributing
 

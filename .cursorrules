@@ -2,7 +2,7 @@
 
 ## Project Context
 This is an AI-powered tech newsletter application using Google Gemini.
-Two-agent system: NewsCollectorAgent (RSS feeds) and NewsSummarizerAgent (AI summaries).
+Three-agent system: NewsCollectorAgent (RSS feeds), NewsSummarizerAgent (AI summaries), and EmailAgent (newsletter delivery).
 
 ## Code Style & Standards
 - Python 3.8+ with type hints (typing module)
