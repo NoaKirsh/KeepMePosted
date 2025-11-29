@@ -25,7 +25,7 @@ source = ["."]
 omit = ["*/tests/*", "*/.venv/*", "*/venv/*", "*/setup_google_ai.py"]
 
 [tool.coverage.report]
-exclude_lines = [
-    "pragma: no cover",
-    "if __name__ == .__main__.:",
-]
+exclude_lines = ["pragma: no cover", "if __name__ == .__main__.:"]
+
+[tool.coverage.xml]
+output = "coverage.xml"

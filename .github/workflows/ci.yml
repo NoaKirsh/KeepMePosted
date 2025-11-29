@@ -34,7 +34,13 @@ jobs:
     
     - name: Run tests with pytest
       run: |
-        python -m pytest tests/ -v --tb=short --cov=.
+        python -m pytest tests/ -v --tb=short --cov=. --cov-report=xml
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
     
   lint:
     name: Code Quality
