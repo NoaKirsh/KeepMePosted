@@ -1,0 +1,38 @@
+name: Weekly Newsletter
+
+on:
+  schedule:
+    # Run every Friday at 9 AM UTC
+    - cron: '0 9 * * 5'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  send-newsletter:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+        cache: 'pip'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run newsletter generation
+      env:
+        GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        EMAIL_ENABLED: ${{ secrets.EMAIL_ENABLED }}
+        EMAIL_USER: ${{ secrets.EMAIL_USER }}
+        EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        MAILING_LIST: ${{ secrets.MAILING_LIST }}
+        HOURS_BACK: "168"  # 1 week
+      run: |
+        python main.py
+
