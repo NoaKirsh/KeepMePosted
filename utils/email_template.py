@@ -8,12 +8,12 @@ from typing import List, Dict
 
 class NewsletterTemplate:
     """Generates HTML email templates for newsletters."""
-    
+
     @staticmethod
     def generate_html(summary: str, articles: List[Dict]) -> str:
         """
         Generate a beautiful HTML email template.
-        
+
         Template structure:
         1. Header - Purple gradient with title and date
         2. Summary - AI-generated analysis in a highlighted box
@@ -21,7 +21,7 @@ class NewsletterTemplate:
         4. Footer - Branding and info
         """
         current_date = datetime.now().strftime("%B %d, %Y")
-        
+
         # Build articles HTML
         articles_html = ""
         for article in articles[:10]:
@@ -31,7 +31,7 @@ class NewsletterTemplate:
                 <div class="article-meta">{article['source']} • {article['published'].strftime('%B %d, %Y at %H:%M')}</div>
                 <a href="{article['link']}" class="article-link" target="_blank">Read more →</a>
             </div>"""
-        
+
         # Complete HTML template
         return f"""<!DOCTYPE html>
 <html>
@@ -129,16 +129,16 @@ class NewsletterTemplate:
             <h1>🚀 KeepMePosted</h1>
             <p>Your AI-Powered Tech Newsletter • {current_date}</p>
         </div>
-        
+
         <div class="summary">
             <pre>{summary}</pre>
         </div>
-        
+
         <div class="articles">
             <h2>📰 Recent Articles</h2>
             {articles_html}
         </div>
-        
+
         <div class="footer">
             <p>Powered by Google Gemini • Generated with KeepMePosted</p>
             <p>You're receiving this because you subscribed to tech news updates</p>

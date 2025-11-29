@@ -24,17 +24,18 @@ from agents.email_sender import EmailAgent
 # =============================================================================
 # Test configuration and RSS feed data
 
+
 @pytest.fixture
 def sample_config():
     """Standard test configuration with all required settings."""
     return {
-        'hours_back': 120,
-        'max_articles': 10,
-        'max_ai': 15,
-        'google_api_key': 'test_api_key_12345',
-        'model': 'models/gemini-2.5-flash',
-        'ai_tokens': 2000,
-        'ai_temp': 0.7,
+        "hours_back": 120,
+        "max_articles": 10,
+        "max_ai": 15,
+        "google_api_key": "test_api_key_12345",
+        "model": "models/gemini-2.5-flash",
+        "ai_tokens": 2000,
+        "ai_temp": 0.7,
     }
 
 
@@ -42,9 +43,9 @@ def sample_config():
 def sample_rss_feeds():
     """Standard RSS feeds for testing (3 feeds)."""
     return {
-        'TechCrunch': 'https://techcrunch.com/feed/',
-        'The Verge': 'https://theverge.com/rss',
-        'NVIDIA': 'https://nvidianews.nvidia.com/rss'
+        "TechCrunch": "https://techcrunch.com/feed/",
+        "The Verge": "https://theverge.com/rss",
+        "NVIDIA": "https://nvidianews.nvidia.com/rss",
     }
 
 
@@ -53,15 +54,16 @@ def sample_rss_feeds():
 # =============================================================================
 # Sample article data for testing collector and summarizer
 
+
 @pytest.fixture
 def sample_article():
     """A single sample article with all required fields."""
     return {
-        'source': 'TechCrunch',
-        'title': 'Breaking: New AI Model Released',
-        'link': 'https://example.com/article1',
-        'published': datetime.now(timezone.utc),
-        'summary': 'A revolutionary new AI model has been announced.'
+        "source": "TechCrunch",
+        "title": "Breaking: New AI Model Released",
+        "link": "https://example.com/article1",
+        "published": datetime.now(timezone.utc),
+        "summary": "A revolutionary new AI model has been announced.",
     }
 
 
@@ -71,32 +73,32 @@ def sample_articles():
     base_time = datetime.now(timezone.utc)
     return [
         {
-            'source': 'TechCrunch',
-            'title': 'NVIDIA Announces New GPU Architecture',
-            'link': 'https://example.com/nvidia-gpu',
-            'published': base_time - timedelta(hours=2),
-            'summary': 'NVIDIA revealed its next-generation GPU architecture.'
+            "source": "TechCrunch",
+            "title": "NVIDIA Announces New GPU Architecture",
+            "link": "https://example.com/nvidia-gpu",
+            "published": base_time - timedelta(hours=2),
+            "summary": "NVIDIA revealed its next-generation GPU architecture.",
         },
         {
-            'source': 'The Verge',
-            'title': 'Intel CEO Discusses Future Plans',
-            'link': 'https://example.com/intel-ceo',
-            'published': base_time - timedelta(hours=5),
-            'summary': 'Intel\'s CEO outlined the company\'s roadmap.'
+            "source": "The Verge",
+            "title": "Intel CEO Discusses Future Plans",
+            "link": "https://example.com/intel-ceo",
+            "published": base_time - timedelta(hours=5),
+            "summary": "Intel's CEO outlined the company's roadmap.",
         },
         {
-            'source': 'NVIDIA',
-            'title': 'NVIDIA Partners with Major Cloud Provider',
-            'link': 'https://example.com/nvidia-partnership',
-            'published': base_time - timedelta(hours=10),
-            'summary': 'NVIDIA announced a strategic partnership.'
+            "source": "NVIDIA",
+            "title": "NVIDIA Partners with Major Cloud Provider",
+            "link": "https://example.com/nvidia-partnership",
+            "published": base_time - timedelta(hours=10),
+            "summary": "NVIDIA announced a strategic partnership.",
         },
         {
-            'source': 'TechCrunch',
-            'title': 'AMD Releases New Processor Line',
-            'link': 'https://example.com/amd-processor',
-            'published': base_time - timedelta(hours=15),
-            'summary': 'AMD launched its latest processor family.'
+            "source": "TechCrunch",
+            "title": "AMD Releases New Processor Line",
+            "link": "https://example.com/amd-processor",
+            "published": base_time - timedelta(hours=15),
+            "summary": "AMD launched its latest processor family.",
         },
     ]
 
@@ -107,11 +109,11 @@ def old_articles():
     old_time = datetime.now(timezone.utc) - timedelta(days=10)
     return [
         {
-            'source': 'TechCrunch',
-            'title': 'Old News Article',
-            'link': 'https://example.com/old',
-            'published': old_time,
-            'summary': 'This article is too old.'
+            "source": "TechCrunch",
+            "title": "Old News Article",
+            "link": "https://example.com/old",
+            "published": old_time,
+            "summary": "This article is too old.",
         }
     ]
 
@@ -121,13 +123,14 @@ def old_articles():
 # =============================================================================
 # Mocked feedparser objects for testing RSS collection
 
+
 @pytest.fixture
 def mock_rss_entry():
     """Mock RSS entry object from feedparser with all standard fields."""
     entry = Mock()
-    entry.title = 'Test Article Title'
-    entry.link = 'https://example.com/test'
-    entry.summary = 'Test article summary'
+    entry.title = "Test Article Title"
+    entry.link = "https://example.com/test"
+    entry.summary = "Test article summary"
     entry.published_parsed = (2024, 10, 14, 12, 0, 0, 0, 0, 0)
     return entry
 
@@ -146,6 +149,7 @@ def mock_rss_feed():
 # =============================================================================
 # Mocked Google Generative AI responses for testing summarizer
 
+
 @pytest.fixture
 def mock_gemini_response():
     """Mock successful Gemini API response with structured content."""
@@ -162,13 +166,13 @@ def mock_gemini_response():
 **🎯 PRIORITY COMPANY UPDATES:**
 - NVIDIA: Leading in AI datacenter market
 - Intel: Focusing on foundry business"""
-    
+
     # Mock candidates structure (Gemini response format)
     candidate = Mock()
     candidate.content.parts = [Mock(text=response.text)]
     candidate.finish_reason = 1  # STOP (successful completion)
     response.candidates = [candidate]
-    
+
     return response
 
 
@@ -196,15 +200,16 @@ def mock_genai_client():
 # =============================================================================
 # Mocked SMTP and email configurations for testing
 
+
 @pytest.fixture
 def sample_email_config():
     """Email configuration for testing."""
     return {
-        'email_enabled': True,
-        'email_user': 'test@gmail.com',
-        'email_password': 'test_password',
-        'smtp_server': 'smtp.gmail.com',
-        'smtp_port': 587,
+        "email_enabled": True,
+        "email_user": "test@gmail.com",
+        "email_password": "test_password",
+        "smtp_server": "smtp.gmail.com",
+        "smtp_port": 587,
     }
 
 
@@ -212,11 +217,11 @@ def sample_email_config():
 def disabled_email_config():
     """Email configuration with email disabled."""
     return {
-        'email_enabled': False,
-        'email_user': 'test@gmail.com',
-        'email_password': 'test_password',
-        'smtp_server': 'smtp.gmail.com',
-        'smtp_port': 587,
+        "email_enabled": False,
+        "email_user": "test@gmail.com",
+        "email_password": "test_password",
+        "smtp_server": "smtp.gmail.com",
+        "smtp_port": 587,
     }
 
 
@@ -224,11 +229,11 @@ def disabled_email_config():
 def no_credentials_email_config():
     """Email configuration with missing credentials."""
     return {
-        'email_enabled': True,
-        'email_user': '',
-        'email_password': '',
-        'smtp_server': 'smtp.gmail.com',
-        'smtp_port': 587,
+        "email_enabled": True,
+        "email_user": "",
+        "email_password": "",
+        "smtp_server": "smtp.gmail.com",
+        "smtp_port": 587,
     }
 
 
@@ -236,6 +241,7 @@ def no_credentials_email_config():
 # AGENT INSTANCE FIXTURES
 # =============================================================================
 # Pre-configured agent instances for testing
+
 
 @pytest.fixture
 def collector(sample_rss_feeds, sample_config):
