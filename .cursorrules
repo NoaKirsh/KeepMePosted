@@ -63,5 +63,6 @@ Two-agent system: NewsCollectorAgent (RSS feeds) and NewsSummarizerAgent (AI sum
 - Docstrings for all classes and public methods
 - Inline comments for complex logic only
 - Keep README updated with setup instructions
+- Update the file structure in README for every change in files
 - Document configuration options in config.py
 - It would be best to keep a human-like writing style - so it doesn't seem like an AI wrote that.
