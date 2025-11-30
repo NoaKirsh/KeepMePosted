@@ -10,6 +10,8 @@ from .collector import NewsCollectorAgent
 from .summarizer import NewsSummarizerAgent
 from .email_sender import EmailAgent
 
+logger = logging.getLogger(__name__)
+
 
 class TechNewsOrchestrator:
     """Orchestrates the collector, summarizer, and email agents with dialog capabilities."""
@@ -20,13 +22,13 @@ class TechNewsOrchestrator:
         self.collector = NewsCollectorAgent(rss_feeds, config)
         self.summarizer = NewsSummarizerAgent(config)
         self.email_agent = EmailAgent(config)
-        self.logger = logging.getLogger(self.__class__.__name__)
 
     async def initialize_agents(self):
         """Validate configuration."""
         if not self.config["google_api_key"]:
+            logger.error("GOOGLE_API_KEY not found")
             raise ValueError("GOOGLE_API_KEY not found. Set it in .env file.")
-        self.logger.info("Agents initialized successfully")
+        logger.info("Agents initialized successfully")
 
     async def run_dialog_workflow(self):
         """Run the dialog workflow between collector, summarizer, and email agents."""

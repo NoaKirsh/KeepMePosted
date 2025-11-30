@@ -7,6 +7,9 @@ import logging
 import textwrap
 from typing import List, Dict
 from utils.ai_client import get_google_ai_client
+from utils.retry import retry_on_api_error
+
+logger = logging.getLogger(__name__)
 
 
 class NewsSummarizerAgent:
@@ -14,7 +17,6 @@ class NewsSummarizerAgent:
 
     def __init__(self, config: Dict):
         self.config = config
-        self.logger = logging.getLogger(self.__class__.__name__)
         self.genai = None
 
     def _get_ai_client(self):
@@ -102,10 +104,39 @@ class NewsSummarizerAgent:
                                     Structured Summary:"""
         )
 
+    @retry_on_api_error()
+    async def _call_gemini_with_retry(self, model, prompt: str, genai) -> str:
+        """Call Gemini API with retry logic for transient failures."""
+        logger.debug(f"Calling Gemini API with model: {self.config['model']}")
+
+        safety_settings = [
+            {"category": cat, "threshold": "BLOCK_NONE"}
+            for cat in [
+                "HARM_CATEGORY_HARASSMENT",
+                "HARM_CATEGORY_HATE_SPEECH",
+                "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                "HARM_CATEGORY_DANGEROUS_CONTENT",
+            ]
+        ]
+
+        response = model.generate_content(
+            prompt,
+            generation_config=genai.types.GenerationConfig(
+                max_output_tokens=self.config["ai_tokens"], temperature=self.config["ai_temp"]
+            ),
+            safety_settings=safety_settings,
+        )
+
+        logger.info("Gemini API call successful")
+        return response
+
     async def analyze_articles(self, articles: List[Dict]) -> str:
         """Analyze and summarize collected articles using Google Gemini."""
         if not articles:
+            logger.warning("No articles available for analysis")
             return "No articles available for analysis."
+
+        logger.info(f"Starting analysis of {len(articles)} articles with {self.config['model']}")
 
         try:
             genai = self._get_ai_client()
@@ -114,29 +145,15 @@ class NewsSummarizerAgent:
 
             print("🤖 Generating AI summary with Google Gemini (this may take 30-60 seconds)...")
 
-            safety_settings = [
-                {"category": cat, "threshold": "BLOCK_NONE"}
-                for cat in [
-                    "HARM_CATEGORY_HARASSMENT",
-                    "HARM_CATEGORY_HATE_SPEECH",
-                    "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                    "HARM_CATEGORY_DANGEROUS_CONTENT",
-                ]
-            ]
-
-            response = model.generate_content(
-                self._build_prompt(articles, days),
-                generation_config=genai.types.GenerationConfig(
-                    max_output_tokens=self.config["ai_tokens"], temperature=self.config["ai_temp"]
-                ),
-                safety_settings=safety_settings,
-            )
+            prompt = self._build_prompt(articles, days)
+            response = await self._call_gemini_with_retry(model, prompt, genai)
 
             print("✅ AI summary generated successfully!\n")
 
             # Check if response was blocked
             if not response.candidates or not response.candidates[0].content.parts:
                 reason = response.candidates[0].finish_reason if response.candidates else "Unknown"
+                logger.warning(f"Gemini response blocked with reason: {reason}")
 
                 # Map finish reasons to user-friendly messages
                 reason_messages = {
@@ -158,14 +175,16 @@ class NewsSummarizerAgent:
                     f"Try: Reduce max_ai in config.py or wait and retry."
                 )
 
-            return response.text.strip()
+            summary = response.text.strip()
+            logger.info(f"Analysis completed, summary length: {len(summary)} characters")
+            return summary
 
         except Exception as e:
             error_msg = str(e).lower()
+            logger.error(f"Analysis failed: {e}", exc_info=True)
 
             # Check for specific error types
             if "quota" in error_msg or "limit" in error_msg:
-                self.logger.error(f"API quota/rate limit error: {e}")
                 return (
                     f"❌ API Quota or Rate Limit Exceeded!\n\n"
                     f"Error: {e}\n\n"
@@ -176,12 +195,10 @@ class NewsSummarizerAgent:
                     f"4. Get a new API key if quota is exhausted"
                 )
             elif "api" in error_msg and "key" in error_msg:
-                self.logger.error(f"API key error: {e}")
                 return (
                     f"❌ API Key Error!\n\n"
                     f"Error: {e}\n\n"
                     f"Check that GOOGLE_API_KEY in .env is valid."
                 )
             else:
-                self.logger.error(f"Error creating AI summary: {e}")
                 return f"❌ Error creating AI summary: {e}"

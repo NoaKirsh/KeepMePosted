@@ -7,6 +7,9 @@ import logging
 import feedparser
 from datetime import datetime, timedelta, timezone
 from typing import List, Dict
+from utils.retry import retry_on_network_error
+
+logger = logging.getLogger(__name__)
 
 
 class NewsCollectorAgent:
@@ -16,7 +19,11 @@ class NewsCollectorAgent:
         self.rss_feeds = rss_feeds
         self.config = config
         self.collected_articles = []
-        self.logger = logging.getLogger(self.__class__.__name__)
+
+    @retry_on_network_error()
+    def _fetch_feed(self, url: str) -> feedparser.FeedParserDict:
+        """Fetch RSS feed with retry logic."""
+        return feedparser.parse(url)
 
     async def collect_news(self) -> List[Dict]:
         """Collect news articles from RSS feeds."""
@@ -24,6 +31,10 @@ class NewsCollectorAgent:
         articles = []
         days = self.config["hours_back"] // 24
 
+        logger.info(
+            f"Starting collection from {len(self.rss_feeds)} feeds, "
+            f"looking back {self.config['hours_back']} hours"
+        )
         print(f"\n🔍 Collecting articles from the last {days} days...")
 
         for idx, (source, url) in enumerate(self.rss_feeds.items(), 1):
@@ -33,8 +44,9 @@ class NewsCollectorAgent:
                     end=" ",
                     flush=True,
                 )
-                feed = feedparser.parse(url)
+                feed = self._fetch_feed(url)
                 print(f"✓ ({len(feed.entries)} entries)")
+                logger.debug(f"Fetched {len(feed.entries)} entries from {source}")
 
                 for entry in feed.entries:
                     try:
@@ -55,14 +67,19 @@ class NewsCollectorAgent:
                                 }
                             )
                     except Exception as e:
-                        self.logger.warning(f"Error parsing entry from {source}: {e}")
+                        logger.warning(f"Error parsing entry from {source}: {e}")
             except Exception as e:
                 print("✗ Error")
-                self.logger.error(f"Error fetching from {source}: {e}")
+                logger.error(f"Error fetching from {source}: {e}")
 
         self.collected_articles = sorted(articles, key=lambda x: x["published"], reverse=True)[
             : self.config["max_articles"]
         ]
+
+        logger.info(
+            f"Collection completed: {len(self.collected_articles)} articles from "
+            f"{len(set(a['source'] for a in self.collected_articles))} sources"
+        )
         print(f"✅ Successfully collected {len(self.collected_articles)} articles\n")
         return self.collected_articles
 

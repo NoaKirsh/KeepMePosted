@@ -11,11 +11,15 @@ from agents.orchestrator import TechNewsOrchestrator
 warnings.filterwarnings("ignore")
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
 async def main():
+    logger.info("Starting KeepMePosted newsletter generation")
+
     print("\n" + "=" * 60)
     print("🚀 KeepMePosted - AI Tech Newsletter (Powered by Gemini)")
     print("=" * 60)
@@ -31,8 +35,12 @@ async def main():
         print("✅ Newsletter generation completed!")
         print("=" * 60 + "\n")
 
+        logger.info("Newsletter generation completed successfully")
+
     except Exception as e:
+        logger.error(f"Application error: {e}", exc_info=True)
         print(f"\n❌ Error: {e}\n")
+        raise
 
 
 if __name__ == "__main__":
