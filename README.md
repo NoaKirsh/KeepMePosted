@@ -1,15 +1,20 @@
-# 📰 KeepMePosted
+<div align="center">
+  <img src="keepMePosted_logo.png" alt="KeepMePosted Logo" width="200"/>
 
-> An AI-powered tech newsletter using Google Gemini with intelligent agent dialog capabilities.
-> Two specialized agents work together to collect and summarize tech news for software engineers.
-// An AI-powered tech newsletter using Google Gemini with intelligent agent dialog capabilities.
-// Two specialized agents work together to collect and summarize tech news for software engineers.
+  
+  > An AI-powered tech newsletter using Google Gemini with intelligent agent dialog capabilities.
+  > Three specialized agents work together to collect, summarize, and deliver tech news for software engineers.
+</div>
+
+<div align="center">
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Powered by Google Gemini](https://img.shields.io/badge/Powered%20by-Google%20Gemini-4285F4?logo=google)](https://ai.google.dev/)
 [![codecov](https://codecov.io/gh/NoaKirsh/KeepMePosted/branch/master/graph/badge.svg)](https://codecov.io/gh/NoaKirsh/KeepMePosted)
+
+</div>
 
 ## ✨ Features
 
